@@ -41,7 +41,7 @@
                 <h2>3.数据转JSON显示</h2>
                 <div class="mark">
                     {
-                    <div v-for="data in tableData">"{{data[name1]}}":"{{data[name2]}}";</div>
+                    <div v-for="data in tableData">"{{data[name1]}}":"{{data[name2]}}",</div>
                     }
                 </div>
 
@@ -64,6 +64,8 @@
                 name1:'数据库字段',
                 name2:"繁体中文",
                 thData:[],
+                jsName:"leftMenu",
+                MouldName:"leftMenu",
             }
         },
         methods:{
@@ -109,15 +111,16 @@
                 for(var i=0;i<this.tableData.length;i++){
                     data[this.tableData[i][this.name1]] = this.tableData[i][this.name2];
                 }
+
                 let jsonObj=JSON.stringify(data);
                 //console.log(jsonObj);F:\eletrontest\TESTABC.txt
                 var path = "F:\\eletrontest\\newelectron\\newdemo\\";
-                fs.writeFile(path+"abc.text",jsonObj,function (err) {
+                fs.writeFile(path+ that.jsName +".js",'const '+that.jsName+' = {'+ that.MouldName+':'+jsonObj+'};export default '+ that.jsName+';',function (err) {
                     if (err) {
                         console.log(err);
                     } else {
                         that.$message({
-                            message: '更新text成功！',
+                            message: '更新js成功！',
                             type: 'success'
                         });
                         console.log("file success！！！")
