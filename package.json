@@ -16,7 +16,8 @@
     "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
     "postinstall": "electron-builder --win --x64",
     "package": "electron-packager . manage --win --out ../manage --arch=x64 --app-version=1.0.0 --electron-version=2.0.4  --icon=./logo2x.ico",
-    "packwin": "electron-packager ./dist/electron app --win --out=./dist/pack --arch=x64 --app-version=1.0.0 --overwrite --ignore=node_modules --icon=./logo2x.ico "
+    "packwin": "electron-packager ./dist/electron app --win --out=./dist/pack --arch=x64 --app-version=1.0.0 --overwrite --ignore=node_modules --icon=./logo2x.ico ",
+    "package2":"electron-packager . HelloWorld --platform=win32 --arch=x64 --icon=computer.ico --out=./dist/pack --asar --app-version=0.0.1 --overwrite --ignore=node_modules"
   },
   "build": {
     "productName": "newdemo",

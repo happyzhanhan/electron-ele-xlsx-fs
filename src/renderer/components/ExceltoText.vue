@@ -11,10 +11,15 @@
                         action="#"
                         :on-change="handleChange"
                         accept="csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                        :auto-upload="false">
-                    <i class="el-icon-upload"></i>
-                    <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                    <div class="el-upload__tip" slot="tip">只能上传xlsx/xls文件，且不超过500kb</div>
+                        :auto-upload="false"
+                        :on-progress="uploadXLXProcess">
+                    <div  v-if="progressflag == false">
+                        <i class="el-icon-upload"></i>
+                        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                        <div class="el-upload__tip" slot="tip">只能上传xlsx/xls文件，且不超过500kb</div>
+                    </div>
+                    <el-progress v-if="progressflag == true" type="circle" :percentage="UploadPercent" style="margin-top:30px;"></el-progress>
+
                 </el-upload>
             </div>
 
@@ -55,7 +60,7 @@
                 <div class="mark">
                     {{sheetName}}:{
                          <div v-for="data in tableDatalist">
-                             <div v-for="list in data[sheetName]">{{list[name1]}}:{{list[name2]}},</div>
+                             <div v-for="list in data[sheetName]">{{list[name1]}}:"{{list[name2]}}",</div>
                          </div>
                     }
                 </div>
@@ -84,7 +89,13 @@
                 sheetName:"CommonBtn",  //默认sheetName
                 jsName:"fixedValue", //生成js文件的名字
                 MouldName:"fixedValue", //模块名称 allLanguage ,fixedValue
+
+                progressflag:false, //进度显示
+                UploadPercent:0,
             }
+        },
+        mounted(){
+
         },
         methods:{
             handleChange(file, fileList) {
@@ -92,13 +103,23 @@
                 let files = {0:file.raw}
                 this.readExcel1(files);
             },
+            //进度条展示
+            uploadXLXProcess(event, file, fileList){
+                console.log('进度条展示………………');
+                this.progressflag = true;
+                this.UploadPercent = file.percentage.toFixed(0);
+            },
             readExcel1(files) {//表格导入
                 var that = this;
                // console.log(files);
                 if(files.length<=0){//如果没有文件名
+                    this.progressflag = false;
+                    this.UploadPercent = 0;
                     return false;
                 }else if(!/\.(xls|xlsx)$/.test(files[0].name.toLowerCase())){
                     this.$Message.error('上传格式不正确，请上传xls或者xlsx格式');
+                    this.progressflag = false;
+                    this.UploadPercent = 0;
                     return false;
                 }
                 const fileReader = new FileReader();
@@ -126,6 +147,9 @@
                         that.tableData = JSON.parse(JSON.stringify(ws));
                         that.thData = JSON.parse(JSON.stringify(Object.keys(that.tableData[0])));
                         console.warn(that.thData);
+
+                        that.progressflag = false;
+                        that.UploadPercent = 0;
 
                     } catch (e) {
 
